@@ -389,6 +389,7 @@
 						"     Deposit_amount = sum(Deposit_amount)) ~> AggregateDeposit",
 						"Final sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
+						"     partitionFileNames:['bank_abc'],",
 						"     umask: 0022,",
 						"     preCommands: [],",
 						"     postCommands: [],",
@@ -401,7 +402,8 @@
 						"          Branch_id,",
 						"          Last_updated,",
 						"          Relationship_manager_fullname",
-						"     )) ~> Destination"
+						"     ),",
+						"     partitionBy('hash', 1)) ~> Destination"
 					]
 				}
 			},
