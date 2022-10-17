@@ -123,7 +123,7 @@
 					"location": {
 						"type": "AzureBlobFSLocation",
 						"fileName": {
-							"value": "@concat('Coinbase_', formatDateTime(utcnow(),'YYYY-MM-DD HH:mm:ss'))",
+							"value": "@concat('Coinbase_', formatDateTime(utcnow(),'yyyy-MM-dd HH:mm:ss'))",
 							"type": "Expression"
 						},
 						"fileSystem": "raw"
