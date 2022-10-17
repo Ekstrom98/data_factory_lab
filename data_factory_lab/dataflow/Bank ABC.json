@@ -16,7 +16,7 @@
 						"referenceName": "Relationship_managers",
 						"type": "DatasetReference"
 					},
-					"name": "RelationshipManagers"
+					"name": "RelationshipManagersRaw"
 				}
 			],
 			"sinks": [
@@ -37,6 +37,9 @@
 				},
 				{
 					"name": "SELECTColumnsRelMgrs"
+				},
+				{
+					"name": "RelationshipManagers"
 				}
 			],
 			"scriptLines": [
@@ -60,8 +63,8 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
-				"     documentForm: 'documentPerLine') ~> RelationshipManagers",
-				"SELECTColumnsCust, RelationshipManagers join(SELECTColumnsCust@Relationship_manager_id == RelationshipManagers@relationship_manager_id,",
+				"     documentForm: 'documentPerLine') ~> RelationshipManagersRaw",
+				"SELECTColumnsCust, RelationshipManagers join(SELECTColumnsCust@Relationship_manager_id == SELECTColumnsRelMgrs@Relationship_manager_id,",
 				"     joinType:'inner',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
@@ -74,7 +77,7 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> SELECTColumnsCust",
-				"RelationshipManagers select(mapColumn(",
+				"RelationshipManagersRaw select(mapColumn(",
 				"          Branch_id = branch_id,",
 				"          Relationship_manager_id = relationship_manager_id,",
 				"          first_name,",
@@ -83,6 +86,7 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> SELECTColumnsRelMgrs",
+				"SELECTColumnsRelMgrs derive(Relationship_manager_fullname = concat(first_name, \" \", last_name)) ~> RelationshipManagers",
 				"JoinCustRelMgrs sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     umask: 0022,",
