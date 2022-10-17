@@ -40,6 +40,12 @@
 				},
 				{
 					"name": "RelationshipManagers"
+				},
+				{
+					"name": "SELECTColsRelMgrs"
+				},
+				{
+					"name": "derivedColumn1"
 				}
 			],
 			"scriptLines": [
@@ -64,7 +70,7 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     documentForm: 'documentPerLine') ~> RelationshipManagersRaw",
-				"SELECTColumnsCust, RelationshipManagers join(SELECTColumnsCust@Relationship_manager_id == SELECTColumnsRelMgrs@Relationship_manager_id,",
+				"SELECTColumnsCust, SELECTColsRelMgrs join(SELECTColumnsCust@Relationship_manager_id == SELECTColsRelMgrs@Relationship_manager_id,",
 				"     joinType:'inner',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
@@ -72,7 +78,6 @@
 				"Customers select(mapColumn(",
 				"          Customer_id = customer_id,",
 				"          Relationship_manager_id = relationship_manager_id,",
-				"          last_updated,",
 				"          Deposit_amount = deposit_amount",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
@@ -81,13 +86,20 @@
 				"          Branch_id = branch_id,",
 				"          Relationship_manager_id = relationship_manager_id,",
 				"          first_name,",
-				"          last_name,",
-				"          last_updated",
+				"          last_name",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> SELECTColumnsRelMgrs",
 				"SELECTColumnsRelMgrs derive(Relationship_manager_fullname = concat(first_name, \" \", last_name)) ~> RelationshipManagers",
-				"JoinCustRelMgrs sink(allowSchemaDrift: true,",
+				"RelationshipManagers select(mapColumn(",
+				"          Branch_id,",
+				"          Relationship_manager_id,",
+				"          Relationship_manager_fullname",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> SELECTColsRelMgrs",
+				"JoinCustRelMgrs derive(Last_updated = currentDate()) ~> derivedColumn1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     umask: 0022,",
 				"     preCommands: [],",
