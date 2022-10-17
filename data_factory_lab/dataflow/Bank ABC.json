@@ -45,7 +45,7 @@
 					"name": "SELECTColsRelMgrs"
 				},
 				{
-					"name": "derivedColumn1"
+					"name": "Final"
 				}
 			],
 			"scriptLines": [
@@ -98,14 +98,22 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> SELECTColsRelMgrs",
-				"JoinCustRelMgrs derive(Last_updated = currentDate()) ~> derivedColumn1",
-				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"JoinCustRelMgrs derive(Last_updated = currentDate()) ~> Final",
+				"Final sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     umask: 0022,",
 				"     preCommands: [],",
 				"     postCommands: [],",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> Destination"
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          Customer_id,",
+				"          Relationship_manager_id = SELECTColumnsCust@Relationship_manager_id,",
+				"          Deposit_amount,",
+				"          Branch_id,",
+				"          Last_updated,",
+				"          Relationship_manager_fullname",
+				"     )) ~> Destination"
 			]
 		}
 	}
