@@ -1,0 +1,25 @@
+{
+	"name": "bi_hourly_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "migration-pipeline",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Hour",
+				"interval": 2,
+				"startTime": "2022-10-17T11:34:00Z",
+				"endTime": "2022-10-18T11:34:00Z",
+				"timeZone": "UTC"
+			}
+		}
+	}
+}
