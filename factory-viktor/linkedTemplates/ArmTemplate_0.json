@@ -328,6 +328,9 @@
 						},
 						{
 							"name": "Final"
+						},
+						{
+							"name": "AggregateDeposit"
 						}
 					],
 					"scriptLines": [
@@ -352,7 +355,7 @@
 						"     validateSchema: false,",
 						"     ignoreNoFilesFound: false,",
 						"     documentForm: 'documentPerLine') ~> RelationshipManagersRaw",
-						"SELECTColumnsCust, SELECTColsRelMgrs join(SELECTColumnsCust@Relationship_manager_id == SELECTColsRelMgrs@Relationship_manager_id,",
+						"AggregateDeposit, SELECTColsRelMgrs join(AggregateDeposit@Relationship_manager_id == SELECTColsRelMgrs@Relationship_manager_id,",
 						"     joinType:'inner',",
 						"     matchType:'exact',",
 						"     ignoreSpaces: false,",
@@ -381,6 +384,9 @@
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> SELECTColsRelMgrs",
 						"JoinCustRelMgrs derive(Last_updated = currentDate()) ~> Final",
+						"SELECTColumnsCust aggregate(groupBy(Customer_id,",
+						"          Relationship_manager_id),",
+						"     Deposit_amount = sum(Deposit_amount)) ~> AggregateDeposit",
 						"Final sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     umask: 0022,",
@@ -390,7 +396,7 @@
 						"     skipDuplicateMapOutputs: true,",
 						"     mapColumn(",
 						"          Customer_id,",
-						"          Relationship_manager_id = SELECTColumnsCust@Relationship_manager_id,",
+						"          Relationship_manager_id = AggregateDeposit@Relationship_manager_id,",
 						"          Deposit_amount,",
 						"          Branch_id,",
 						"          Last_updated,",
