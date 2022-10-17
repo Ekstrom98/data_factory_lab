@@ -1,0 +1,39 @@
+{
+	"name": "Relationship_managers",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Datalake",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "relationship_manager.json",
+				"folderPath": "Relationship_managers",
+				"fileSystem": "data"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"branch_id": {
+					"type": "integer"
+				},
+				"relationship_manager_id": {
+					"type": "integer"
+				},
+				"first_name": {
+					"type": "string"
+				},
+				"last_name": {
+					"type": "string"
+				},
+				"last_updated": {
+					"type": "string"
+				}
+			}
+		}
+	}
+}

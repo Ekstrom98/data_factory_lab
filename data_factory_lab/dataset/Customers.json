@@ -1,0 +1,35 @@
+{
+	"name": "Customers",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Datalake",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "Customers",
+				"fileSystem": "data"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"customer_id": {
+					"type": "integer"
+				},
+				"relationship_manager_id": {
+					"type": "integer"
+				},
+				"last_updated": {
+					"type": "string"
+				},
+				"deposit_amount": {
+					"type": "number"
+				}
+			}
+		}
+	}
+}

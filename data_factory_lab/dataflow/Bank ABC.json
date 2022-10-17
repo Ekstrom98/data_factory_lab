@@ -1,0 +1,96 @@
+{
+	"name": "Bank ABC",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Customers",
+						"type": "DatasetReference"
+					},
+					"name": "Customers"
+				},
+				{
+					"dataset": {
+						"referenceName": "Relationship_managers",
+						"type": "DatasetReference"
+					},
+					"name": "RelationshipManagers"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DestinationFile",
+						"type": "DatasetReference"
+					},
+					"name": "Destination"
+				}
+			],
+			"transformations": [
+				{
+					"name": "JoinCustRelMgrs"
+				},
+				{
+					"name": "SELECTColumnsCust"
+				},
+				{
+					"name": "SELECTColumnsRelMgrs"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          customer_id as integer,",
+				"          relationship_manager_id as integer,",
+				"          last_updated as string,",
+				"          deposit_amount as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> Customers",
+				"source(output(",
+				"          branch_id as integer,",
+				"          relationship_manager_id as integer,",
+				"          first_name as string,",
+				"          last_name as string,",
+				"          last_updated as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> RelationshipManagers",
+				"SELECTColumnsCust, RelationshipManagers join(SELECTColumnsCust@Relationship_manager_id == RelationshipManagers@relationship_manager_id,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> JoinCustRelMgrs",
+				"Customers select(mapColumn(",
+				"          Customer_id = customer_id,",
+				"          Relationship_manager_id = relationship_manager_id,",
+				"          last_updated,",
+				"          Deposit_amount = deposit_amount",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> SELECTColumnsCust",
+				"RelationshipManagers select(mapColumn(",
+				"          Branch_id = branch_id,",
+				"          Relationship_manager_id = relationship_manager_id,",
+				"          first_name,",
+				"          last_name,",
+				"          last_updated",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> SELECTColumnsRelMgrs",
+				"JoinCustRelMgrs sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> Destination"
+			]
+		}
+	}
+}
